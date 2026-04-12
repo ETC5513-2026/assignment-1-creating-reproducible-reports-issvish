@@ -1,0 +1,114 @@
+---
+title: "Assignment 1 Report"
+author: "Vishal Sampath Kumar"
+format:
+  html: default
+  pdf: default
+number-sections: true
+toc: true
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+```{r}
+#| label: load-packages
+
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(knitr)
+campaign <- read_csv("data/36905046_Vishal Sampath Kumar.csv")
+```
+
+# Introduction
+
+This report investigates whether higher marketing spend per customer led to higher purchase amounts during a personalised marketing campaign. The data records how much was spent contacting each customer, along with their visits, purchase amount, segment, signup date, and notes. This question matters because marketing teams need to know whether extra campaign spending is linked to stronger sales outcomes. The results help assess whether the campaign was commercially effective.
+
+# Research Question
+
+The main question in this report is whether customers who were targeted with higher marketing spend reciprocated with higher purchase amounts. The analysis focuses on the relationship between `marketing_spend` and `purchase_amount` in the campaign data. The plots in the results section are used to assess whether that relationship is positive and consistent across customer segments.
+
+# Dataset Introduction
+
+The dataset contains one row per customer and records campaign-level information for `r nrow(campaign)` customers across `r ncol(campaign)` variables and the main variables include `marketing_spend`, `visits`, `purchase_amount`, `segment`, `signup_date`, and `notes`. Some values are missing, in `purchase_amount`,`signup_date`, and `notes`, so the data needed cleaning before analysis. To prepare the analysis dataset, I filtered out the rows containing missing values for `purchase_amount` and `signup_date`.
+Although the main question for this report is whether higher marketing spend is associated with higher purchase amounts and `signup_date` does not directly affect that analysis, I chose to remove these missing values as well to preserve the validity of the analysis and exclude potential forged or duplicate customer entries. However, since rows containing missing values in `notes` were not filtered out since the variable `notes` contains additional comments about the customer which is neither a mandatory input nor relevant to the main research question at hand.
+
+```{r}
+campaign_clean <- campaign |>
+  mutate(
+    signup_date = parse_date_time(
+      signup_date,
+      orders = c("ymd", "dmy", "mdy", "b d, Y", "B d, Y")
+    )
+  ) |>
+  filter(!is.na(signup_date), !is.na(purchase_amount))
+```
+
+## Dataset Description
+
+The cleaned dataset used in this report contains `r nrow(campaign_clean)` observations and `r ncol(campaign_clean)` variables. The variables include numeric fields such as `marketing_spend`, `visits`, and `purchase_amount`, and character fields such as `customer_id`, `segment`, and `notes`.
+
+```{r}
+#| label: fig-segment-count
+#| fig-cap: "Number of customers in each segment."
+
+ggplot(campaign_clean, aes(x = segment)) +
+  geom_bar() +
+  labs(x = "Segment", y = "Number of customers")
+```
+
+```{r}
+#| label: tbl-segment-summary
+#| tbl-cap: "Average marketing spend and purchase amount by customer segment."
+
+campaign_clean |>
+  group_by(segment) |>
+  summarise(
+    mean_spend = mean(marketing_spend),
+    mean_purchase = mean(purchase_amount)
+  ) |>
+  knitr::kable()
+
+```
+
+@tbl-segment-summary summarises the average marketing spend and purchase amount by customer segment, while @fig-segment-count shows the number of customers in each segment. These provide useful context for further analysis since it helps explain how the campaign was targeted, shows whether most of the marketing effort was concentrated in one group or spread more evenly across customer types, and whether spending patterns may differ by segment. Together, these summaries show that Consumer customers make up the largest share of the dataset, followed by SMB customers, with Enterprise customers forming the smallest group.
+
+# Results
+
+```{r}
+#| label: fig-spend-purchase
+#| fig-cap: "Relationship between marketing spend and purchase amount."
+
+
+ggplot(campaign_clean, aes(x = marketing_spend, y = purchase_amount)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, color = "blue") +
+  labs(
+    x = "Marketing spend",
+    y = "Purchase amount"
+  ) 
+```
+
+@fig-spend-purchase shows the relationship between marketing spend and purchase amount. The fitted line of best fit slopes upward, which suggests that higher spending is generally associated with higher purchase amounts. The spread around the line shows that the relationship is positive and suggests that higher spending is generally associated with higher purchase amounts. Even so, the spread of points around the line shows that the relationship is not completely linear or causetory rather than correlatory, so spend alone does not fully explain purchase behaviour.
+
+```{r}
+#| label: fig-spend-purchase-segment
+#| fig-cap: "Marketing spend and purchase amount by customer segment."
+
+
+ggplot(campaign_clean, aes(x = marketing_spend, y = purchase_amount, color = segment)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    x = "Marketing spend",
+    y = "Purchase amount",
+    color = "Segment"
+  )
+```
+
+@fig-spend-purchase-segment adds customer segment to the analysis and helps show whether the pattern differs across Consumer, SMB, and Enterprise customers. The same overall upward pattern appears across the groups, although the points are still fairly spread out within each segment. We know from earlier that Consumer customers have the highest average purchase amount at 116.90, followed closely by SMB customers at 115.81, while Enterprise customers have a lower average purchase amount of 84.84. Average marketing spend is highest for SMB customers at 160.85, followed by Consumer customers at 146.79 and Enterprise customers at 120.21. This suggests that the campaign reached the SMB group with slightly higher spend on average, but Consumer customers generated the strongest overall purchase outcomes.
+
+Overall, the figures suggest that customers who received higher marketing spend often also generated higher purchase amounts. This does not mean spending alone caused the higher purchases, but the direction of the relationship is clearly positive in this campaign record. Based on the data, the campaign appears to show a meaningful association between higher marketing spend and higher purchase amount, but the strength of that relationship should be interpreted with some caution.
+
