@@ -1,0 +1,75 @@
+---
+title: "Appendix"
+format:
+  html: default
+  pdf: default
+---
+
+
+# AI use declaration
+
+I used generative AI to help debug and improve my Quarto and R code for this assignment. The main analysis, interpretation, and final report wording were my own work. AI was used as a support tool for troubleshooting, formatting, and minor enhancements.
+
+# AI queries and prompts
+
+I used AI for the following assignment related questions and code fixes:
+
+“im coding on positron, why does my quarto document show an unexpected symbol error?”
+“how do I add a table of content to my quarto doc and number my sections”
+“when im trying to render my quarto doc, it updates the html file ive asked it to create but not the pdf file. this is after ive made some changes, initially, both rendered but now only the html updates to reflect the changes made”
+“How do I add a line of best fit to my ggplot figures?”
+“I used inline r code to refer to the columns and rows within my dataset as such: 'r nrow(campaign' why is my inline r code showing as plain text instead of evaluating?”
+“if I want to refer to certain column names from my dataset inline during my markdown, what is the syntax to have it display as the greyed out code looking text”
+“give me a list of all the prompts ive asked you in this thread so far”
+
+# Screenshots
+
+![](images/1.png)
+
+![](images/2.png)
+
+![](images/3.png)
+
+![](images/4.png)
+
+![](images/5.png)
+
+![](images/6.png)
+
+![](images/7.png)
+
+![](images/8.png)
+
+![](images/9.png)
+
+![](images/10.png)
+
+![](images/11.png)
+
+![](images/12.png)
+
+![](images/13.png)
+
+![](images/14.png)
+
+![](images/15.png)
+
+![](images/16.png)
+
+![](images/17.png)
+
+![](images/18.png)
+
+![](images/19.png)
+
+![](images/20.png)
+
+![](images/21.png)
+
+![](images/22.png)
+
+![](images/23.png)
+
+![](images/24.png)
+
+![](images/25.png)
